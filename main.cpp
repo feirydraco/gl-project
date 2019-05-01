@@ -33,7 +33,36 @@ float hammer_rotate = 0;
 
 int show_axis=-1; 
 int poly_fill = 0;
+float step=-5;
+int ready=0;
+float posx=0, posy=0, theta=0;
 
+void ReadAndDrawPoint()
+{
+	//  if( fscanf(stdin,"%f %f %f", &posx, &posy, &theta) > 0 )
+	//  {
+	// 	printf("POS READ : %f %f %f", posx, posy, theta);
+	// 	ready = 1;
+	//  }
+
+	 glColor3f(1.0f,1.0f,1.0f);
+         glBegin(GL_POINTS);
+	// 	if(ready)
+	// 	{
+	// 		ready=0;
+	// 		printf("POS WRITE : %f %f %f ", posx, posy, theta);
+	// 	}
+	// 	glVertex3f(posx,posy,theta);
+		glVertex3f(step,0,0);
+		step += 0.01;
+	glEnd();
+}
+
+
+
+
+
+/////////////////////////////////////////
 GLfloat objectXform[4][4] = {
 	1,0,0,0,
 	0,1,0,0,
@@ -89,6 +118,13 @@ void draw_scene(int cid)
 
 
 }
+//////////////////////////////////////////////////////
+
+void move_object() {
+  fscanf(stdin,"%f %f %f", &posx, &posy, &theta);
+
+}
+
 //////////////////////////////////////////////////////
 
 void display()
@@ -262,6 +298,8 @@ glutPostRedisplay();
 }
 ///////////////////////////////////////////////////////////////
 
+
+
 int main(int argc, char** argv) 
 {
   glutInit(&argc, argv); 
@@ -271,6 +309,7 @@ int main(int argc, char** argv)
   glutCreateWindow("Han-Wei Shen's 3D hack"); 
   glutDisplayFunc(display); 
   glutMouseFunc(mymouse); 
+  glutIdleFunc(&ReadAndDrawPoint);
   glutMotionFunc(mymotion);
   glutKeyboardFunc(mykey); 
   glutMainLoop(); 
