@@ -235,27 +235,27 @@ void mykey(unsigned char key, int x, int y)
 			break; 
 		case 'n': show_axis=-1;
 			break;
-		case 't':
+		case 'w':
 			glMatrixMode(GL_MODELVIEW); 
 			glLoadMatrixf((GLfloat*) objectXform); 
 			glTranslatef(1,0,0); 
 			glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );
 			show_axis =1; 
 			break; 
-		case 'T': 
+		case 's': 
 			glMatrixMode(GL_MODELVIEW); 
 			glLoadMatrixf((GLfloat*) objectXform); 
 			glTranslatef(-1,0,0); 
 			glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );
 			show_axis=1; 
 			break; 
-		case 'r':
+		case 'a':
 			glMatrixMode(GL_MODELVIEW); 
 			glLoadMatrixf((GLfloat*) objectXform); 
 			glRotatef(30, 0, 0, 1); 
 			glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );	
 			break; 
-		case 'R': 
+		case 'd': 
 			glMatrixMode(GL_MODELVIEW); 
 			glLoadMatrixf((GLfloat*) objectXform); 
 			glRotatef(-30, 0, 0, 1); 
