@@ -33,36 +33,7 @@ float hammer_rotate = 0;
 
 int show_axis=-1; 
 int poly_fill = 0;
-float step=-5;
-int ready=0;
-float posx=0, posy=0, theta=0;
 
-void ReadAndDrawPoint()
-{
-	//  if( fscanf(stdin,"%f %f %f", &posx, &posy, &theta) > 0 )
-	//  {
-	// 	printf("POS READ : %f %f %f", posx, posy, theta);
-	// 	ready = 1;
-	//  }
-
-	 glColor3f(1.0f,1.0f,1.0f);
-         glBegin(GL_POINTS);
-	// 	if(ready)
-	// 	{
-	// 		ready=0;
-	// 		printf("POS WRITE : %f %f %f ", posx, posy, theta);
-	// 	}
-	// 	glVertex3f(posx,posy,theta);
-		glVertex3f(step,0,0);
-		step += 0.01;
-	glEnd();
-}
-
-
-
-
-
-/////////////////////////////////////////
 GLfloat objectXform[4][4] = {
 	1,0,0,0,
 	0,1,0,0,
@@ -95,36 +66,33 @@ void draw_scene(int cid)
 	
 		glColor3f(1,1,0); 
 		glutWireCube(3); 
-
-		GLUquadricObj *p = gluNewQuadric();
-		glColor3f(.5,.5,.8); 
+    glTranslatef(1,0,2); 
+     glutWireCube(1); 
+		//GLUquadricObj *p = gluNewQuadric();
+	//	glColor3f(.5,.5,.8); 
 
 		if (show_axis==1) draw_axes(); 
-		gluCylinder(p, 1.5, 1.5,1.5, 30, 30); //base 	
-		glTranslatef(0,0,1.5); 
-		glRotatef(low_rotate, 0, 0, 1); // rotate lower arm
+	  //gluCylinder(p, 1.5, 1.5,1.5, 30, 30); //base 
+    //glPushMatrix();
+
+
+    //glPopMatrix(); 
+		//glRotatef(low_rotate, 0, 0, 1); // rotate lower arm
 		if (show_axis==2) draw_axes(); 
-		gluCylinder(p, 0.5, 0.5, 2, 10, 10);  // lower arm
-		glTranslatef(0,0,2.0); 
-		glRotatef(up_rotate, 0, 1, 0);   // rotate upper arm  
+		//gluCylinder(p, 0.5, 0.5, 2, 10, 10);  // lower arm
+	//	glTranslatef(0,0,2.0); 
+		//glRotatef(up_rotate, 0, 1, 0);   // rotate upper arm  
 		if (show_axis==3) draw_axes(); 
-		gluCylinder(p, 0.5, 0.5, 2.5, 10, 10); // upper arm 
+		//gluCylinder(p, 0.5, 0.5, 2.5, 10, 10); // upper arm 
         glTranslatef(0,0,2.5); 
 		glRotatef(90, 1, 0, 0); 
 		glRotatef(hammer_rotate, 0, 1, 0); 
 		glTranslatef(0,0,-1); 
 		if (show_axis==4) draw_axes(); 
-		gluCylinder(p,0.5, 0.5, 2, 10, 10); 
+		//gluCylinder(p,0.5, 0.5, 2, 10, 10); 
 
 
 }
-//////////////////////////////////////////////////////
-
-void move_object() {
-  fscanf(stdin,"%f %f %f", &posx, &posy, &theta);
-
-}
-
 //////////////////////////////////////////////////////
 
 void display()
@@ -151,7 +119,7 @@ void display()
 
   glMatrixMode(GL_PROJECTION); 
   glLoadIdentity(); 
-  gluPerspective(60, 1, .1, 100); 
+  gluPerspective(60, 1, .1, 150); 
   
   glMatrixMode(GL_MODELVIEW); 
   glLoadIdentity(); 
@@ -167,7 +135,7 @@ void display()
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular); 
   glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shine); 
   
-  gluLookAt(3,3,3,0,0,0,0,1,0);
+  gluLookAt(30,30,30,0,0,0,0,1,0);
 
   glRotatef(x_angle, 0, 1,0); 
   glRotatef(y_angle, 1,0,0); 
@@ -192,13 +160,13 @@ void display()
   glColor3f(1,0,0); 
   glPushMatrix(); 
   glTranslatef(20, 0, 20);     // cube object
-  glutSolidCube(10); 
+  //glutSolidCube(10); 
   glPopMatrix(); 
 
   glColor3f(0,0,1); 
   glPushMatrix(); 
   glTranslatef(-20, 0, -20);   // sphere object
-  glutSolidSphere(5, 10, 10); 
+  //glutSolidSphere(5, 10, 10); 
   glPopMatrix(); 
 
   glRotatef(-90, 1, 0, 0); 
@@ -298,20 +266,16 @@ glutPostRedisplay();
 }
 ///////////////////////////////////////////////////////////////
 
-
-
 int main(int argc, char** argv) 
 {
   glutInit(&argc, argv); 
   glutInitDisplayMode(GLUT_RGB|GLUT_DOUBLE|GLUT_DEPTH); 
-  glutInitWindowSize(600,600); 
+  glutInitWindowSize(1000,1000); 
   
   glutCreateWindow("Han-Wei Shen's 3D hack"); 
   glutDisplayFunc(display); 
   glutMouseFunc(mymouse); 
-  glutIdleFunc(&ReadAndDrawPoint);
   glutMotionFunc(mymotion);
   glutKeyboardFunc(mykey); 
   glutMainLoop(); 
 }
-
