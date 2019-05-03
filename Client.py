@@ -46,20 +46,20 @@ buffer = None
 # ani = FuncAnimation(fig, update, init_func=init, blit=True)
 # plt.show()
 
-print("Attempting to fetch data from:", sys.argv[1])
+# print("Attempting to fetch data from:", sys.argv[1])
 while(True):
     try:
         contents = urllib.request.urlopen("http://" + sys.argv[1]).read().decode()
     except:
-        print("oopsie")
+        # print("oopsie")
         contents = None
     if contents == None:
         time.sleep(0.2)
-        print("Retrying..")
+        # print("Retrying..")
     if buffer != contents:
         try:
             query = literal_eval(contents)
-            print(query["pose"][0], query["pose"][1], query["theta"])
+            print(round(query["pose"][0], 6), round(query["pose"][1], 6), round(query["theta"], 6), sep =" ")
             x_pos = query["pose"][0]
             y_pos = query["pose"][1]
             plt.redraw()

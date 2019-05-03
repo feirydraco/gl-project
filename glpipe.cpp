@@ -1,40 +1,41 @@
+#include <GL/gl.h>	// Header File For The OpenGL Library
+#include <GL/glu.h>	// Header File For The GLu Library
 #include <GL/glut.h>    // Header File For The GLUT Library 
-#include <GL/gl.h>	// Header File For The OpenGL32 Library
-#include <GL/glu.h>	// Header File For The GLu32 Library
+
 #include <unistd.h>     // needed to sleep
-#include <stdio.h>
+#include <stdio.h>	// needed to IO streaming
 
 /* ASCII code for the escape key. */
 #define ESCAPE 27
 
+/* Window size (width x height x bpp) */
+#define WIN_WIDTH	320
+#define WIN_HEIGHT	200
+#define WIN_BPP		32
+
+
 /* The number of our GLUT window */
 int window;
 
-// float step=-5;
-int ready=0;
+/* The pixel position */
 float posx=0, posy=0, posz=0;
 
+/* The pixel color */
+float red=1.0f, green=1.0f, blue=1.0f;
+
+
+/* Read one XYZ RGB position from stdin, and output this to OpenGL via glcolor3f/glVertex3f() calls */    
 void ReadAndDrawPoint()
 {
-	 if( fscanf(stdin,"%f %f %f", &posx, &posy, &posz) > 0 )
-	 {
-		printf("POS READ : %f %f %f", posx, posy, posz);
-		ready = 1;
-	 }
-
-	 glColor3f(1.0f,1.0f,1.0f);
-         glBegin(GL_POINTS);
-		if(ready)
-		{
-			ready=0;
-			printf("POS WRITE : %f %f %f", posx, posy, posz);
-		}
-		glVertex3f(posx,posy,posz);
-		// glVertex3f(step,0,0);
-		// step += 0.01;
-	glEnd();
+		 if( fscanf(stdin,"%f %f %f %f %f %f", &posx, &posy, &posz, &red, &green, &blue) > 0 )
+		 {
+			printf(   "%f %f %f %f %f %f", posx, posy, posz, red, green, blue);
+         		glBegin(GL_POINTS);
+				glColor3f(red,green,blue);
+				glVertex3f(posx,posy,posz);
+			glEnd();
+		 }
 }
-
 
 /* A general OpenGL initialization function.  Sets all of the initial parameters. */
 void InitGL(int Width, int Height)	        // We call this right after our OpenGL window is created.
