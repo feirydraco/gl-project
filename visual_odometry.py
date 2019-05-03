@@ -18,8 +18,8 @@ lk_params = dict(winSize  = (21, 21),
 def featureTracking(image_ref, image_cur, px_ref):
 	# kp2, st, err = cv2.calcOpticalFlowPyrLK(image_ref, image_cur, px_ref, None, **lk_params)  #shape: [k,2] [k,1] [k,1]
 
-	# st = st.reshape(st.shape[0])
-	# kp1 = px_ref[st == 1]
+	st = st.reshape(st.shape[0])
+	kp1 = px_ref[st == 1]
 	# kp2 = kp2[st == 1]
 	kp1, des1 = orb.detectAndCompute(image_ref,None)
 	kp2, des2 = orb.detectAndCompute(image_cur,None)
