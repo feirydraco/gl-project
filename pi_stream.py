@@ -60,9 +60,9 @@ try:
             cury = query["pose"][1]
             theta = query["theta"]
             curz = 0
-            # print("Current:", curx, cury, curz, theta)
+            print(curx, cury, theta)
             # print("Previous:", prevx, prevy, prevz)
-            print((query["m_left"] * 100 + query["m_right"] * 100) / 2, query["dtheta"])
+            # print((query["m_left"] * 100 + query["m_right"] * 100) / 2, query["dtheta"])
         buffer = contents
 
         # Construct a stream to hold the image data and read the image
