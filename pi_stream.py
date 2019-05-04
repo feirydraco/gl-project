@@ -60,8 +60,9 @@ try:
             cury = query["pose"][1]
             theta = query["theta"]
             curz = 0
-            print("Current:", curx, cury, curz, theta)
-            print("Previous:", prevx, prevy, prevz)
+            # print("Current:", curx, cury, curz, theta)
+            # print("Previous:", prevx, prevy, prevz)
+            print((query["m_left"] * 100 + query["m_right"] * 100) / 2, query["dtheta"])
         buffer = contents
 
         # Construct a stream to hold the image data and read the image
@@ -74,37 +75,6 @@ try:
         image = Image.open(image_stream)
         cv_image = np.flip(np.flip(np.array(image), 0), 1)
         cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
-        vo.setScale(curx, cury, curz, prevx, prevy, prevz)
-        vo.update(cv_image)
-        cur_t = vo.cur_t
-        if(img_id > 2):
-            x, y, z = cur_t[0], cur_t[1], cur_t[2]
-        else:
-            x, y, z = 0., 0., 0.
-
-        draw_x, draw_y = int(x)+290, int(z)+90
-        true_x, true_y = int(vo.x)+290, int(vo.z)+90
-
-        cv2.circle(traj, (draw_x,draw_y), 1, (img_id*255/4540,255-img_id*255/4540,0), 1)
-        cv2.circle(traj, (true_x,true_y), 1, (0,0,255), 2)
-        cv2.rectangle(traj, (10, 20), (600, 60), (0,0,0), -1)
-        text = "Coordinates: x=%2fm y=%2fm z=%2fm"%(x,y,z)
-        cv2.putText(traj, text, (20,40), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1, 8)
-
-        cv2.imshow('Road facing camera', cv_image)
-        cv2.imshow('Trajectory', traj)
-        cv2.waitKey(1)
-        img_id += 1
-        corners = cv2.goodFeaturesToTrack(cv_image,25,0.01,10)
-        # kp = orb.detect(cv_image, None)
-        # kp, des = orb.compute(cv_image, kp)
-        corners = np.int0(corners)
-        for i in corners:
-            x,y = i.ravel()
-            print(x, y)
-            cv2.circle(cv_image,(x,y),3,255,-1)
-        # img = np.zeros((cv_image.shape[0], cv_image.shape[1]))
-        # img = cv2.drawKeypoints(cv_image, kp, img, color=(0,255,0), flags=0)
         cv2.imshow('Stream', cv_image)
 
         
