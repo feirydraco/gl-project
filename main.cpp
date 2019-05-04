@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include<iostream>
 #include <GL/glut.h> 
 #include <GL/gl.h>
 
@@ -93,6 +93,44 @@ void draw_scene(int cid)
 
 
 }
+//////////////////////////////////////////////////
+
+void ReadAndDrawPoint()
+{
+
+
+    float posx,posy,theta;
+	  if(std::cin>>posx>>posy>>theta) {
+      // theta = (theta*180)/3.14;
+      std::cout<<posx<<posy<<theta;
+      //printf("POS READ : %f %f %f", posx, posx, theta);
+      //ready = 1;
+      glMatrixMode(GL_MODELVIEW); 
+        glLoadMatrixf((GLfloat*) objectXform); 
+        glTranslatef(posx/10,posy/10,0); 
+        glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );
+        show_axis =1;  
+
+        glMatrixMode(GL_MODELVIEW); 
+        glLoadMatrixf((GLfloat*) objectXform); 
+        glRotatef(theta, 0, 0, 1); 
+        glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );	
+      }
+      glutPostRedisplay(); 
+
+      
+		
+}
+
+
+
+
+
+
+
+
+
+
 //////////////////////////////////////////////////////
 
 void display()
@@ -153,7 +191,7 @@ void display()
   glColor3f(0,1,0); 
   glPushMatrix(); 
   glTranslatef(0,-5,0); 
-  glScalef(100, 1, 100);       // floor
+  glScalef(200, 1, 200);       // floor
   glutSolidCube(1); 
   glPopMatrix(); 
 
@@ -238,7 +276,7 @@ void mykey(unsigned char key, int x, int y)
 		case 'w':
 			glMatrixMode(GL_MODELVIEW); 
 			glLoadMatrixf((GLfloat*) objectXform); 
-			glTranslatef(1,0,0); 
+			glTranslatef(.1,0,0); 
 			glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );
 			show_axis =1; 
 			break; 
@@ -272,10 +310,11 @@ int main(int argc, char** argv)
   glutInitDisplayMode(GLUT_RGB|GLUT_DOUBLE|GLUT_DEPTH); 
   glutInitWindowSize(1000,1000); 
   
-  glutCreateWindow("Han-Wei Shen's 3D hack"); 
+  glutCreateWindow("proj"); 
   glutDisplayFunc(display); 
   glutMouseFunc(mymouse); 
   glutMotionFunc(mymotion);
-  glutKeyboardFunc(mykey); 
+  glutKeyboardFunc(mykey);
+  glutIdleFunc(ReadAndDrawPoint) ;
   glutMainLoop(); 
 }

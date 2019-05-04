@@ -8,8 +8,8 @@
 #include <math.h>
 #include <time.h>
 
-#include <windows.h>
-#include <mmsystem.h>
+//#include <windows.h>
+//#include <mmsystem.h>
 
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -539,10 +539,10 @@ void myinit()
         GLfloat light_specular2[]={1.0, 1.0, 1.0, 1.0};
         GLfloat light_position2[]={10.0, 0.0, 10.0, 0.0};
 
-        glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
-        glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient2);
-        glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse2);
-        glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular2);
+       //glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
+        //glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient2);
+        //glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse2);
+        //glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular2);
 
         //light 3
         GLfloat light_ambient3[]={0.0, 0.0, 0.0, 1.0};
@@ -550,10 +550,10 @@ void myinit()
         GLfloat light_specular3[]={1.0, 1.0, 1.0, 1.0};
         GLfloat light_position3[]={0.0, -10.0, 10.0, 0.0};
 
-        glLightfv(GL_LIGHT2, GL_POSITION, light_position3);
-        glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient3);
-        glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuse3);
-        glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular3);
+        ///glLightfv(GL_LIGHT2, GL_POSITION, light_position3);
+       // glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient3);
+       // glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuse3);
+        //glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular3);
         
         //light 4
         GLfloat light_ambient4[]={0.0, 0.0, 0.0, 1.0};
@@ -562,10 +562,10 @@ void myinit()
         GLfloat light_position4[]={-10.0, 10.0, 10.0, 0.0};
 
         glLightfv(GL_LIGHT3, GL_POSITION, light_position4);
-        glLightfv(GL_LIGHT3, GL_AMBIENT, light_ambient4);
+       glLightfv(GL_LIGHT3, GL_AMBIENT, light_ambient4);
         glLightfv(GL_LIGHT3, GL_DIFFUSE, light_diffuse4);
         glLightfv(GL_LIGHT3, GL_SPECULAR, light_specular4);
-        
+       // /
         
         glShadeModel(GL_SMOOTH);
         glEnable(GL_LIGHTING);
@@ -656,7 +656,7 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutCreateWindow("robot");
-    PlaySound("bird_FINAL.wav", NULL, SND_ASYNC|SND_FILENAME|SND_LOOP );
+    //PlaySound("bird_FINAL.wav", NULL, SND_ASYNC|SND_FILENAME|SND_LOOP );
        
     myinit();
     glutReshapeFunc(myReshape);
@@ -681,8 +681,8 @@ int main(int argc, char **argv)
     //Load our texture
     texture[3] = LoadTexture( "tex3df.bmp", 640, 480 );      //back
     texture[2] = LoadTexture( "tex3df.bmp", 640, 480 );      //floor
-    texture[1] = LoadTexture( "books.bmp", 422, 220 );      //left
-    texture[0] = LoadTexture( "MJ.bmp", 400, 316 );      //right
+    texture[1] = LoadTexture( "tex3df.bmp", 640, 480 );      //left
+    texture[0] = LoadTexture( "tex3df.bmp", 400, 316 );      //right
     
     glutMainLoop();
     return 0;
