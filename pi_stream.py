@@ -60,7 +60,9 @@ try:
             cury = query["pose"][1]
             theta = query["theta"]
             curz = 0
-            print(curx, cury, theta)
+            current_data = str(curx) + " " + str(cury) + " " + str(theta)
+            with open("log.txt", "a") as file:
+                file.write(current_data)
             # print("Previous:", prevx, prevy, prevz)
             # print((query["m_left"] * 100 + query["m_right"] * 100) / 2, query["dtheta"])
         buffer = contents
