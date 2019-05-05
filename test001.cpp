@@ -8,7 +8,7 @@
 #include <math.h>
 #include <time.h>
 
-//#include <windows.h>
+#include <iostream>
 //#include <mmsystem.h>
 
 #include <GL/glut.h>
@@ -650,40 +650,46 @@ void myinit()
         gluQuadricNormals(rll, GLU_SMOOTH);
 }
 
-int main(int argc, char **argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(500, 500);
-    glutCreateWindow("robot");
-    //PlaySound("bird_FINAL.wav", NULL, SND_ASYNC|SND_FILENAME|SND_LOOP );
+// int main(int argc, char **argv)
+// {
+//     glutInit(&argc, argv);
+//     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+//     glutInitWindowSize(500, 500);
+//     glutCreateWindow("robot");
+//     //PlaySound("bird_FINAL.wav", NULL, SND_ASYNC|SND_FILENAME|SND_LOOP );
        
-    myinit();
-    glutReshapeFunc(myReshape);
-    glutDisplayFunc(display);
-	glutIdleFunc(idle);
+//     myinit();
+//     glutReshapeFunc(myReshape);
+//     glutDisplayFunc(display);
+// 	glutIdleFunc(idle);
 	
-    glutCreateMenu(menu);
-    glutAddMenuEntry("torso", 0);
-    glutAddMenuEntry("head1", 1);
-    glutAddMenuEntry("head2", 2);
-    glutAddMenuEntry("right_upper_arm", 3);
-    glutAddMenuEntry("right_lower_arm", 4);
-    glutAddMenuEntry("left_upper_arm", 5);
-    glutAddMenuEntry("left_lower_arm", 6);
-    glutAddMenuEntry("right_upper_leg", 7);
-    glutAddMenuEntry("right_lower_leg", 8);
-    glutAddMenuEntry("left_upper_leg", 9);
-    glutAddMenuEntry("left_lower_leg", 10);
-    glutAddMenuEntry("quit", 11);
-    glutAttachMenu(GLUT_MIDDLE_BUTTON);
+//     glutCreateMenu(menu);
+//     glutAddMenuEntry("torso", 0);
+//     glutAddMenuEntry("head1", 1);
+//     glutAddMenuEntry("head2", 2);
+//     glutAddMenuEntry("right_upper_arm", 3);
+//     glutAddMenuEntry("right_lower_arm", 4);
+//     glutAddMenuEntry("left_upper_arm", 5);
+//     glutAddMenuEntry("left_lower_arm", 6);
+//     glutAddMenuEntry("right_upper_leg", 7);
+//     glutAddMenuEntry("right_lower_leg", 8);
+//     glutAddMenuEntry("left_upper_leg", 9);
+//     glutAddMenuEntry("left_lower_leg", 10);
+//     glutAddMenuEntry("quit", 11);
+//     glutAttachMenu(GLUT_MIDDLE_BUTTON);
 
-    //Load our texture
-    texture[3] = LoadTexture( "tex3df.bmp", 640, 480 );      //back
-    texture[2] = LoadTexture( "tex3df.bmp", 640, 480 );      //floor
-    texture[1] = LoadTexture( "tex3df.bmp", 640, 480 );      //left
-    texture[0] = LoadTexture( "tex3df.bmp", 400, 316 );      //right
+//     //Load our texture
+//     texture[3] = LoadTexture( "tex3df.bmp", 640, 480 );      //back
+//     texture[2] = LoadTexture( "tex3df.bmp", 640, 480 );      //floor
+//     texture[1] = LoadTexture( "tex3df.bmp", 640, 480 );      //left
+//     texture[0] = LoadTexture( "tex3df.bmp", 400, 316 );      //right
     
-    glutMainLoop();
-    return 0;
+//     glutMainLoop();
+//     return 0;
+// }
+
+int main(){
+   float k;
+   std::cin>>k;
+   std::cout<<k;
 }
