@@ -17,6 +17,8 @@ traj = np.zeros((600,600,3), dtype=np.float32)
 stream = cv2.VideoCapture(0)
 img_id = 1
 
+#open("log.txt", "w").close()
+
 buffer = None
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
@@ -26,6 +28,8 @@ server_socket.listen(0)
 curx, cury, curz =  0, 0, 0
 prevx, prevy, prevz = 0, 0, 0
 prevImage = None
+observations = []
+OBS_LIMIT = 1
 # Accept a single connection and make a file-like object out of it
 connection = server_socket.accept()[0].makefile('rb')
 try:
@@ -60,9 +64,13 @@ try:
             cury = query["pose"][1]
             theta = query["theta"]
             curz = 0
-            current_data = str(curx) + " " + str(cury) + " " + str(theta)
+            current_data = str(curx) + " " + str(cury) + " " + str(theta) + " "
             with open("log.txt", "a") as file:
                 file.write(current_data)
+            
+                
+
+                
             # print("Previous:", prevx, prevy, prevz)
             # print((query["m_left"] * 100 + query["m_right"] * 100) / 2, query["dtheta"])
         buffer = contents
@@ -77,9 +85,25 @@ try:
         image = Image.open(image_stream)
         cv_image = np.flip(np.flip(np.array(image), 0), 1)
         cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
-        cv2.imshow('Stream', cv_image)
 
-        
+
+        corners = cv2.goodFeaturesToTrack(cv_image,25,0.01,10)
+        corners = np.int0(corners)
+
+        with open("log.txt", "a") as file:
+
+            for i in corners:
+                x,y = i.ravel()
+                if (len(observations) <= OBS_LIMIT):
+                    observations.append((x, y))
+                    cv2.circle(cv_image, (x,y),3,255,-1)
+                    file.write("(" + str(x) + str(y) + ") ")
+
+                cv2.imshow('Stream', cv_image)
+
+    
+        del observations[:]
+
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
