@@ -28,7 +28,6 @@ server_socket.listen(0)
 curx, cury, curz =  0, 0, 0
 prevx, prevy, prevz = 0, 0, 0
 prevImage = None
-observations = []
 OBS_LIMIT = 1
 # Accept a single connection and make a file-like object out of it
 connection = server_socket.accept()[0].makefile('rb')
@@ -73,7 +72,7 @@ try:
                 
             # print("Previous:", prevx, prevy, prevz)
             # print((query["m_left"] * 100 + query["m_right"] * 100) / 2, query["dtheta"])
-        buffer = contents
+        
 
         # Construct a stream to hold the image data and read the image
         # data from the connection
@@ -90,22 +89,27 @@ try:
         corners = cv2.goodFeaturesToTrack(cv_image,25,0.01,10)
         corners = np.int0(corners)
 
-        with open("log.txt", "a") as file:
+        
+        for i in corners:
+            x,y = i.ravel()
+            current_data += str(x) + " " + str(y) + " "
+            cv2.circle(cv_image, (x,y),3,255,-1)
+        
+        cv2.imshow('Stream', cv_image)
 
-            for i in corners:
-                x,y = i.ravel()
-                if (len(observations) <= OBS_LIMIT):
-                    observations.append((x, y))
-                    cv2.circle(cv_image, (x,y),3,255,-1)
-                    file.write("(" + str(x) + str(y) + ") ")
-
-                cv2.imshow('Stream', cv_image)
+        if buffer != contents:
+            with open("log.txt", "a") as file:
+                for i in corners:
+                    x,y = i.ravel()
+                    file.write(str(x) + " " + str(y) + " ")
+            with open("log.txt", "a") as file:
+                file.write("\n")
 
     
-        del observations[:]
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        buffer = contents
 
 finally:
     connection.close()
