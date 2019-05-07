@@ -1,11 +1,3 @@
-////////////////////////////////////////////////////////
-//
-// 3D sample program
-//
-// Han-Wei Shen
-//
-////////////////////////////////////////////////////////
-
 #include <stdio.h>
 #include <stdlib.h>
 #include<iostream>
@@ -70,28 +62,27 @@ void draw_scene(int cid)
 		glutWireCube(3); 
     glTranslatef(1,0,2); 
      glutWireCube(1); 
-		//GLUquadricObj *p = gluNewQuadric();
-	//	glColor3f(.5,.5,.8); 
+		
 
-		if (show_axis==1) draw_axes(); 
-	  //gluCylinder(p, 1.5, 1.5,1.5, 30, 30); //base 
-    //glPushMatrix();
+	// 	if (show_axis==1) draw_axes(); 
+	//   //gluCylinder(p, 1.5, 1.5,1.5, 30, 30); //base 
+  //   //glPushMatrix();
 
 
-    //glPopMatrix(); 
-		//glRotatef(low_rotate, 0, 0, 1); // rotate lower arm
-		if (show_axis==2) draw_axes(); 
-		//gluCylinder(p, 0.5, 0.5, 2, 10, 10);  // lower arm
-	//	glTranslatef(0,0,2.0); 
-		//glRotatef(up_rotate, 0, 1, 0);   // rotate upper arm  
-		if (show_axis==3) draw_axes(); 
-		//gluCylinder(p, 0.5, 0.5, 2.5, 10, 10); // upper arm 
-        glTranslatef(0,0,2.5); 
-		glRotatef(90, 1, 0, 0); 
-		glRotatef(hammer_rotate, 0, 1, 0); 
-		glTranslatef(0,0,-1); 
-		if (show_axis==4) draw_axes(); 
-		//gluCylinder(p,0.5, 0.5, 2, 10, 10); 
+  //   //glPopMatrix(); 
+	// 	//glRotatef(low_rotate, 0, 0, 1); // rotate lower arm
+	// 	if (show_axis==2) draw_axes(); 
+	// 	//gluCylinder(p, 0.5, 0.5, 2, 10, 10);  // lower arm
+	// //	glTranslatef(0,0,2.0); 
+	// 	//glRotatef(up_rotate, 0, 1, 0);   // rotate upper arm  
+	// 	if (show_axis==3) draw_axes(); 
+	// 	//gluCylinder(p, 0.5, 0.5, 2.5, 10, 10); // upper arm 
+  //       glTranslatef(0,0,2.5); 
+	// 	glRotatef(90, 1, 0, 0); 
+	// 	glRotatef(hammer_rotate, 0, 1, 0); 
+	// 	glTranslatef(0,0,-1); 
+	// 	if (show_axis==4) draw_axes(); 
+	// 	//gluCylinder(p,0.5, 0.5, 2, 10, 10); 
 
 
 }
@@ -131,15 +122,19 @@ void display()
 {
   glEnable(GL_DEPTH_TEST);  
   glClearColor(0,0,0,1); 
+
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   
+
+  //If enabled, use the current lighting parameters to compute the vertex color. Otherwise, simply associate the current color with each vertex
   glEnable(GL_LIGHTING); 
   glEnable(GL_LIGHT0); 
 
   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); 
 
-  glEnable(GL_NORMALIZE); 
+  glEnable(GL_NORMALIZE); //?
   
+  //If enabled, have ambient and diffuse material parameters track the current color.
   glEnable(GL_COLOR_MATERIAL);  
 
   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE); 
@@ -151,7 +146,7 @@ void display()
 
   glMatrixMode(GL_PROJECTION); 
   glLoadIdentity(); 
-  gluPerspective(60, 1, .1, 150); 
+  gluPerspective(10, 1, .1, 150); 
   
   glMatrixMode(GL_MODELVIEW); 
   glLoadIdentity(); 
@@ -182,58 +177,56 @@ void display()
 	if (!poly_fill) glDisable(GL_LIGHTING); 
 	else glEnable(GL_LIGHTING); 
 
-  glColor3f(0,1,0); 
+  
   glPushMatrix(); 
   glTranslatef(0,-5,0); 
   glScalef(200, 1, 200);       // floor
   glutSolidCube(1); 
   glPopMatrix(); 
-
-  glColor3f(1,0,0); 
-  glPushMatrix(); 
-  glTranslatef(20, 0, 20);     // cube object
-  //glutSolidCube(10); 
-  glPopMatrix(); 
-
-  glColor3f(0,0,1); 
-  glPushMatrix(); 
-  glTranslatef(-20, 0, -20);   // sphere object
-  //glutSolidSphere(5, 10, 10); 
-  glPopMatrix(); 
-
+  glLineWidth(1);
+  
+  
 
   std::fstream file("log.txt", std::ios_base::in);
   float x, y, theta,x_obs, y_obs;
-  while (file >> x >> y >> theta>>x_obs>>y_obs)
-  {
+  while (file >> x >> y >> theta)
+  { 
+    glColor3f(0,1,0); 
     glPushMatrix(); 
     glTranslatef(x * 10, 0, y * 10);
     glRotatef(theta, 0, 1, 0);   
     glutSolidCube(1); 
+    
+    while(file >> x_obs>> y_obs){
+      if(x_obs == -1 and y_obs == -1)
+        break;
+        glColor3f(1,.5, .5); 
+      glBegin(GL_LINES);
+      glVertex3f(0,0,0);
+      // glVertex3f((x_obs / 640) * 10, 0,(y_obs / 480) * 10);
+      if (x_obs > y_obs) {
+        glVertex3f((x_obs / 640) * 10, 0,(y_obs / 480) * 10);
+      }
+      else {
+        glVertex3f(0, (x_obs / 640) * 10, (y_obs / 480) * 10);
+      }
+
+      glEnd();
+    
+    }
     glPopMatrix(); 
+    //glutSwapBuffers(); 
+    //glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
+    //process pair (a,b)
+    
 
 
 
-    //   //process pair (a,b)
-    // glPushMatrix(); 
-    // glTranslatef(x * 10, 0, y * 10);   
-    // glutSolidCube(1); 
-    // glPopMatrix(); 
-   
-    //glPushMatrix(); 
-    //glTranslatef(x, 0, y * 10);   
-    //glutSolidCube(1); 
-    //glPopMatrix(); 
+   // glRotatef(90, 1, 0, 0);
+    //glRotatef(180, 1, 0, 0);
 
 
-
-    glRotatef(90, 1, 0, 0);
-
-
-
-    // glBegin(GL_LINE);
-    // glVertex2f();
-
+    
 
 
 
@@ -276,10 +269,10 @@ void mymotion(int x, int y)
       else if (x_angle <-180) x_angle += 360; 
       press_x = x; 
 	   
-      y_angle += (y - press_y);//5.0; 
-      if (y_angle > 180) y_angle -= 360; 
-      else if (y_angle <-180) y_angle += 360; 
-      press_y = y; 
+      // y_angle += (y - press_y);//5.0; 
+      // if (y_angle > 180) y_angle -= 360; 
+      // else if (y_angle <-180) y_angle += 360; 
+      // press_y = y; 
     }
 	else if (xform_mode == XFORM_SCALE){
       float old_size = scale_size;
@@ -303,7 +296,7 @@ void mykey(unsigned char key, int x, int y)
 
 		case 'q': exit(1);
 			break;
-		case 'l':  low_rotate+=5; show_axis=2; 
+		case 'r':  x_shift=0, z_shift = 0; 
 			break; 
 		case 'u': up_rotate +=5; show_axis=3;
 			break; 
@@ -360,7 +353,6 @@ void SpecialInput(int key, int x, int y)
   x_shift += 3;
   break;
 }
-//gluLookAt(30,30,30,x_shift,0,0,0,1,0);
 glutPostRedisplay();
 }
 ///////////////////////////////////////////////////////////////

@@ -83,27 +83,27 @@ try:
         image_stream.seek(0)
         image = Image.open(image_stream)
         cv_image = np.flip(np.flip(np.array(image), 0), 1)
-        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+        # cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
 
 
-        corners = cv2.goodFeaturesToTrack(cv_image,25,0.01,10)
-        corners = np.int0(corners)
+        # corners = cv2.goodFeaturesToTrack(cv_image,25,0.01,10)
+        # corners = np.int0(corners)
 
         
-        for i in corners:
-            x,y = i.ravel()
-            current_data += str(x) + " " + str(y) + " "
-            cv2.circle(cv_image, (x,y),3,255,-1)
+        # for i in corners:
+        #     x,y = i.ravel()
+        #     current_data += str(x) + " " + str(y) + " "
+        #     cv2.circle(cv_image, (x,y),3,255,-1)
         
         cv2.imshow('Stream', cv_image)
 
-        if buffer != contents:
-            with open("log.txt", "a") as file:
-                for i in corners:
-                    x,y = i.ravel()
-                    file.write(str(x) + " " + str(y) + " ")
-            with open("log.txt", "a") as file:
-                file.write("\n")
+        # if buffer != contents:
+        #     with open("log.txt", "a") as file:
+        #         for i in corners:
+        #             x,y = i.ravel()
+        #             file.write(str(x) + " " + str(y) + " ")
+        #     with open("log.txt", "a") as file:
+        #             file.write("-1 -1\n")
 
     
 
