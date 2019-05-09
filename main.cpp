@@ -205,7 +205,7 @@ void display()
         break;
       glBegin(GL_LINES);
       glVertex3f(0,0,0);
-      glVertex3f(x_obs, 0,y_obs);
+      glVertex3f(0, y_obs,x_obs);
       glEnd();
     
     }
