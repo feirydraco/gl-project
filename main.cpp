@@ -1,11 +1,3 @@
-////////////////////////////////////////////////////////
-//
-// 3D sample program
-//
-// Han-Wei Shen
-//
-////////////////////////////////////////////////////////
-
 #include <stdio.h>
 #include <stdlib.h>
 #include<iostream>
@@ -130,15 +122,19 @@ void display()
 {
   glEnable(GL_DEPTH_TEST);  
   glClearColor(0,0,0,1); 
+
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   
+
+  //If enabled, use the current lighting parameters to compute the vertex color. Otherwise, simply associate the current color with each vertex
   glEnable(GL_LIGHTING); 
   glEnable(GL_LIGHT0); 
 
   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); 
 
-  glEnable(GL_NORMALIZE); 
+  glEnable(GL_NORMALIZE); //?
   
+  //If enabled, have ambient and diffuse material parameters track the current color.
   glEnable(GL_COLOR_MATERIAL);  
 
   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE); 
@@ -150,7 +146,7 @@ void display()
 
   glMatrixMode(GL_PROJECTION); 
   glLoadIdentity(); 
-  gluPerspective(60, 1, .1, 150); 
+  gluPerspective(10, 1, .1, 150); 
   
   glMatrixMode(GL_MODELVIEW); 
   glLoadIdentity(); 
@@ -181,7 +177,7 @@ void display()
 	if (!poly_fill) glDisable(GL_LIGHTING); 
 	else glEnable(GL_LIGHTING); 
 
-  glColor3f(0,1,0); 
+  
   glPushMatrix(); 
   glTranslatef(0,-5,0); 
   glScalef(200, 1, 200);       // floor
@@ -189,12 +185,13 @@ void display()
   glPopMatrix(); 
   glLineWidth(1);
   
-
+  
 
   std::fstream file("log.txt", std::ios_base::in);
   float x, y, theta,x_obs, y_obs;
   while (file >> x >> y >> theta)
-  {
+  { 
+    glColor3f(0,1,0); 
     glPushMatrix(); 
     glTranslatef(x * 10, 0, y * 10);
     glRotatef(theta, 0, 1, 0);   
@@ -203,15 +200,23 @@ void display()
     while(file >> x_obs>> y_obs){
       if(x_obs == -1 and y_obs == -1)
         break;
+        glColor3f(1,.5, .5); 
       glBegin(GL_LINES);
       glVertex3f(0,0,0);
-      glVertex3f(0, y_obs,x_obs);
+      // glVertex3f((x_obs / 640) * 10, 0,(y_obs / 480) * 10);
+      if (x_obs > y_obs) {
+        glVertex3f((x_obs / 640) * 10, 0,(y_obs / 480) * 10);
+      }
+      else {
+        glVertex3f(0, (x_obs / 640) * 10, (y_obs / 480) * 10);
+      }
+
       glEnd();
     
     }
     glPopMatrix(); 
-
-
+    //glutSwapBuffers(); 
+    //glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
     //process pair (a,b)
     
 
