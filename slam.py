@@ -29,7 +29,7 @@ def getObs(idx):
 					return [action.split(" ")[i] for i in range(8)]
 				curr += 1
 
-while True:
+for img_id in range(1, 32):
     try:
         vo.update(img_id)
     except:
@@ -49,11 +49,26 @@ while True:
     cv2.putText(traj, text, (20,40), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1, 8)
     img = getObs(img_id)[7].strip()
     img = cv2.imread(os.path.abspath(img))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    corners = cv2.goodFeaturesToTrack(gray,25,0.01,10)
+    corners = np.int0(corners)
+
+    for i in corners:
+        x,y = i.ravel()
+        cv2.circle(img,(x,y),3,255,-1)
+        Rx = true_x - 290
+        Ry = true_y - 90
+        Rz = np.sqrt((true_x + 100) ** 2 + (true_y + 100) ** 2)
+        print("Point at:", Rx, Ry, Rz)
+        with open("plot.txt", "a") as file:
+                 file.write(str((true_x  - 290) * 100) + " " + str((true_y - 90) * 100) + " " + str((true_x - 290 + 2) * 100 / 640) + " " + str((true_y - 90 + 2) * 100 / 480) + " " + str(1) + "\n")
+
     cv2.imshow('Road facing camera', img)
     cv2.imshow('Trajectory', traj)
     cv2.waitKey(1)
     img_id += 1
+    time.sleep(0.2)
 
 cv2.imwrite('map.png', traj)
 

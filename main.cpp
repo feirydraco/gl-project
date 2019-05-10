@@ -187,30 +187,23 @@ void display()
   
   
 
-  std::fstream file("log.txt", std::ios_base::in);
-  float x, y, theta,x_obs, y_obs;
-  while (file >> x >> y >> theta)
+  std::fstream file("plot.txt", std::ios_base::in);
+  float x, y, theta, x_obs, y_obs, z_obs;
+  while (file >> x >> y)
   { 
     glColor3f(0,1,0); 
     glPushMatrix(); 
     glTranslatef(x * 10, 0, y * 10);
-    glRotatef(theta, 0, 1, 0);   
+    // glRotatef(theta, 0, 1, 0);   
     glutSolidCube(1); 
     
-    while(file >> x_obs>> y_obs){
-      if(x_obs == -1 and y_obs == -1)
+    while(file >> x_obs>> y_obs >> z_obs){
+      if(x_obs == -1 and y_obs == -1 and z_obs == -1)
         break;
-        glColor3f(1,.5, .5); 
-      glBegin(GL_LINES);
-      glVertex3f(0,0,0);
-      // glVertex3f((x_obs / 640) * 10, 0,(y_obs / 480) * 10);
-      if (x_obs > y_obs) {
-        glVertex3f((x_obs / 640) * 10, 0,(y_obs / 480) * 10);
-      }
-      else {
-        glVertex3f(0, (x_obs / 640) * 10, (y_obs / 480) * 10);
-      }
-
+      
+      glColor3f(1,.5, .5); 
+      glBegin(GL_POINT);
+      glVertex3f(x_obs,y_obs,z_obs);
       glEnd();
     
     }

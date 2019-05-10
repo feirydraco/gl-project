@@ -51,14 +51,14 @@ class VisualOdometry:
 
 	def getAbsoluteScale(self, idx):
 		ss = self.getObs(idx - 1)
-		x_prev = float(ss[1])
-		y_prev = float(ss[2])
-		z_prev = 0
+		x_prev = float(ss[1]) * 100
+		y_prev = 0
+		z_prev = float(ss[2]) * 100
 		ss = self.getObs(idx)
-		x = float(ss[1])
-		y = float(ss[2])
-		z = 0
-		self.trueX, self.trueY, self.trueZ = x, y, z
+		x = float(ss[1]) * 100
+		y = 0
+		z = float(ss[2]) * 100
+		self.trueX, self.trueY,self.trueZ = x, y, z
 		return np.sqrt((x - x_prev)*(x - x_prev) + (y - y_prev)*(y - y_prev) + (z - z_prev)*(z - z_prev))
 
 	def processFirstFrame(self):
@@ -93,8 +93,9 @@ class VisualOdometry:
 				if curr == idx:
 					return [action.split(" ")[i] for i in range(8)]
 				curr += 1
+
 	def update(self, idx):
-		print(self.getObs(idx))
+		# print(self.getObs(idx))
 		img = self.getObs(idx)[7].strip()
 		img = cv2.imread(os.path.abspath(img))
 		img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

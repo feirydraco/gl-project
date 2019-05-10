@@ -12,7 +12,7 @@ import time
 orb = cv2.ORB_create(100)
 
 stream = cv2.VideoCapture(0)
-img_id = 1
+img_id = 0
 current_id = 0
 # Create some random colors
 color = np.random.randint(0,255,(100,3))
