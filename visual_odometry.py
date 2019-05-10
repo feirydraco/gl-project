@@ -1,28 +1,22 @@
 import numpy as np 
 import cv2
-from ast import literal_eval
-import urllib.request
-
+import os
 
 STAGE_FIRST_FRAME = 0
 STAGE_SECOND_FRAME = 1
 STAGE_DEFAULT_FRAME = 2
 kMinNumFeature = 1500
 
-orb = cv2.ORB_create()
-
 lk_params = dict(winSize  = (21, 21), 
 				#maxLevel = 3,
              	criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 30, 0.01))
 
 def featureTracking(image_ref, image_cur, px_ref):
-	# kp2, st, err = cv2.calcOpticalFlowPyrLK(image_ref, image_cur, px_ref, None, **lk_params)  #shape: [k,2] [k,1] [k,1]
+	kp2, st, err = cv2.calcOpticalFlowPyrLK(image_ref, image_cur, px_ref, None, **lk_params)  #shape: [k,2] [k,1] [k,1]
 
 	st = st.reshape(st.shape[0])
 	kp1 = px_ref[st == 1]
-	# kp2 = kp2[st == 1]
-	kp1, des1 = orb.detectAndCompute(image_ref,None)
-	kp2, des2 = orb.detectAndCompute(image_cur,None)
+	kp2 = kp2[st == 1]
 
 	return kp1, kp2
 
@@ -52,33 +46,20 @@ class VisualOdometry:
 		self.px_cur = None
 		self.focal = cam.fx
 		self.pp = (cam.cx, cam.cy)
-		# self.trueX, self.trueY, self.trueZ = 0, 0, 0
+		self.trueX, self.trueY, self.trueZ = 0, 0, 0
 		self.detector = cv2.FastFeatureDetector_create(threshold=25, nonmaxSuppression=True)
-		# with open(annotations) as f:
-		# 	self.annotations = f.readlines()
-		self.prev_x = 0
-		self.prev_y = 0
-		self.prev_z = 0
-		self.x = 0
-		self.y = 0
-		self.z = 0
 
-	def setScale(self, x, y, z, prevx, prevy, prevz):
-		self.prev_x, self.prev_y, self.prev_z = prevx, prevy, prevz
-		self.x, self.y, self.z = x, y, z
-
-	def getAbsoluteScale(self):  #specialized for KITTI odometry dataset
-		# ss = self.annotations[frame_id-1].strip().split()
-		# x_prev = float(ss[3])
-		# y_prev = float(ss[7])
-		# z_prev = float(ss[11])
-		# ss = self.annotations[frame_id].strip().split()
-		# x = float(input())
-		# y = float(input())
-		# z = float(input())
-		# self.trueX, self.trueY, self.trueZ = x, y, z
-		# self.prev_x, self.prev_y, self.prev_z = x, y, z
-		return np.sqrt((self.x - self.prev_x) * (self.x - self.prev_x) + (self.y - self.prev_y)*(self.y - self.prev_y) + (self.z - self.prev_z)*(self.z - self.prev_z))
+	def getAbsoluteScale(self, idx):
+		ss = self.getObs(idx - 1)
+		x_prev = float(ss[1])
+		y_prev = float(ss[2])
+		z_prev = 0
+		ss = self.getObs(idx)
+		x = float(ss[1])
+		y = float(ss[2])
+		z = 0
+		self.trueX, self.trueY, self.trueZ = x, y, z
+		return np.sqrt((x - x_prev)*(x - x_prev) + (y - y_prev)*(y - y_prev) + (z - z_prev)*(z - z_prev))
 
 	def processFirstFrame(self):
 		self.px_ref = self.detector.detect(self.new_frame)
@@ -92,11 +73,11 @@ class VisualOdometry:
 		self.frame_stage = STAGE_DEFAULT_FRAME 
 		self.px_ref = self.px_cur
 
-	def processFrame(self):
+	def processFrame(self, idx):
 		self.px_ref, self.px_cur = featureTracking(self.last_frame, self.new_frame, self.px_ref)
 		E, mask = cv2.findEssentialMat(self.px_cur, self.px_ref, focal=self.focal, pp=self.pp, method=cv2.RANSAC, prob=0.999, threshold=1.0)
 		_, R, t, mask = cv2.recoverPose(E, self.px_cur, self.px_ref, focal=self.focal, pp = self.pp)
-		absolute_scale = self.getAbsoluteScale()
+		absolute_scale = self.getAbsoluteScale(idx)
 		if(absolute_scale > 0.1):
 			self.cur_t = self.cur_t + absolute_scale*self.cur_R.dot(t) 
 			self.cur_R = R.dot(self.cur_R)
@@ -104,14 +85,23 @@ class VisualOdometry:
 			self.px_cur = self.detector.detect(self.new_frame)
 			self.px_cur = np.array([x.pt for x in self.px_cur], dtype=np.float32)
 		self.px_ref = self.px_cur
-
-	def update(self, img):
-		print(img.ndim)
+	
+	def getObs(self, idx):
+		curr = 0
+		with open("log.txt") as log:
+			for action in log:
+				if curr == idx:
+					return [action.split(" ")[i] for i in range(8)]
+				curr += 1
+	def update(self, idx):
+		print(self.getObs(idx))
+		img = self.getObs(idx)[7].strip()
+		img = cv2.imread(os.path.abspath(img))
+		img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		assert(img.ndim==2 and img.shape[0]==self.cam.height and img.shape[1]==self.cam.width), "Frame: provided image has not the same size as the camera model or image is not grayscale"
-		
 		self.new_frame = img
 		if(self.frame_stage == STAGE_DEFAULT_FRAME):
-			self.processFrame()
+			self.processFrame(idx)
 		elif(self.frame_stage == STAGE_SECOND_FRAME):
 			self.processSecondFrame()
 		elif(self.frame_stage == STAGE_FIRST_FRAME):

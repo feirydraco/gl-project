@@ -74,7 +74,7 @@ try:
             cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
             cv2.imwrite("./images/{}.jpg".format(current_id), cv_image)
             current_id += 1
-            current_data = "msg " + str(TS) + " " + str(curx) + " " + str(cury) + " " + str(theta) + " " + str(dtheta) + " " + str(mleft) + " " + str(mright) + " " + str("./images/{}.jpg".format(current_id)) + "\n"
+            current_data = "msg" + str(TS) + " " + str(curx) + " " + str(cury) + " " + str(theta) + " " + str(dtheta) + " " + str(mleft) + " " + str(mright) + " " + str("./images/{}.jpg".format(current_id)) + "\n"
             with open("log.txt", "a") as file:
                  file.write(current_data)
 

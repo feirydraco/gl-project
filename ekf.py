@@ -4,49 +4,59 @@ import time
 import re
 import sympy
 import math
+import cv2
+import os
+import time
+from visual_odometry import PinholeCamera, VisualOdometry
 
-# np.array([
-#             [self.s_t * math.cos(self.s_t + self.theta_t / 2)],
-#             [self.s_t * math.sin(self.s_t + self.theta_t / 2)],
-#             [self.theta_t],
-  
-
-#     def initvalues(self):
-#         with open(self.logfile) as log:
-#             for action in log:
-#                 self.TS = action.split(" ")[0]
-#                 self.obs_x = action.split(" ")[1]
-#                 self.obx_y = action.split(" ")[2]
-#                 self.obs_theta = action.split(" ")[3]
-#                 self.dtheta = action.split(" ")[4]
-#                 self.mleft = action.split(" ")[5]
-#                 self.mright = action.split(" ")[6]
-#                 self.image = action.split(" ")[7]
-#                 break
-
-#     def returnTS(self, TS):
-#         with open(self.logfile) as log:
-#             for actions in log:
-#                 print(actions)
+cam = PinholeCamera(640.0, 480.0, 1.112718502113158593e+03, 1.109070993342474367e+03, 3.261312488982279092e+02, 2.284030377231190130e+02)
+vo = VisualOdometry(cam)
+color = np.random.randint(0,255,(100,3))
 
 
-# if __name__ == "__main__":
-#     R = RobotEKF("log.txt")
-#     print(R.TS, R.obs_x, R.obx_y)
-#get observation id, frame and values
+lk_params = dict( winSize  = (15,15),
+                  maxLevel = 2,
+                  criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
+
+traj = np.zeros((600,600,3), dtype=np.uint8)
+img_id = 1
+
 def getObs(idx):
-    curr = 0
-    with open("log.txt") as log:
-        for action in log:
-            if curr == idx:
-                return [action.split(" ")[i] for i in range(8)]
-            else:
-                curr += 1
+		curr = 0
+		with open("log.txt") as log:
+			for action in log:
+				if curr == idx:
+					return [action.split(" ")[i] for i in range(8)]
+				curr += 1
 
-R = EKF(3, 2, 2)
-# R.x = [0 0 0]
-R.x = np.array([initvalues()[1], initvalues()[2], initvalues()[3]])
-print(getObs(0))
+while True:
+    try:
+        vo.update(img_id)
+    except:
+        break
+    cur_t = vo.cur_t
+    if(img_id > 2):
+        x, y, z = cur_t[0], cur_t[1], cur_t[2]
+    else:
+        x, y, z = 0., 0., 0.
+    draw_x, draw_y = int(x)+290, int(z)+90
+    true_x, true_y = int(vo.trueX)+290, int(vo.trueZ)+90
+
+    cv2.circle(traj, (draw_x,draw_y), 1, (img_id*255/4540,255-img_id*255/4540,0), 1)
+    cv2.circle(traj, (true_x,true_y), 1, (0,0,255), 2)
+    cv2.rectangle(traj, (10, 20), (600, 60), (0,0,0), -1)
+    text = "Coordinates: x=%2fm y=%2fm z=%2fm"%(x,y,z)
+    cv2.putText(traj, text, (20,40), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1, 8)
+    img = getObs(img_id)[7].strip()
+    img = cv2.imread(os.path.abspath(img))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    cv2.imshow('Road facing camera', img)
+    cv2.imshow('Trajectory', traj)
+    cv2.waitKey(1)
+    img_id += 1
+
+cv2.imwrite('map.png', traj)
+
 
 
 
