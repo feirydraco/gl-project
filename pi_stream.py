@@ -75,8 +75,10 @@ try:
             cv2.imwrite("./images/{}.jpg".format(current_id), cv_image)
             current_id += 1
             current_data = "msg" + str(TS) + " " + str(curx) + " " + str(cury) + " " + str(theta) + " " + str(dtheta) + " " + str(mleft) + " " + str(mright) + " " + str("./images/{}.jpg".format(current_id)) + "\n"
-            with open("log.txt", "a") as file:
+            with open("log2.txt", "a") as file:
                  file.write(current_data)
+            with open("traj2.txt", "a") as file:
+                 file.write(str(curx) + " " + str(cury) + " " + str(theta) + "\n")
 
             kp, des = orb.detectAndCompute(cv_image, None)
             # if (curx, cury, theta) not in observations:

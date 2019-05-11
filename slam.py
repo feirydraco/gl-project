@@ -58,11 +58,13 @@ for img_id in range(1, 32):
         x,y = i.ravel()
         cv2.circle(img,(x,y),3,255,-1)
         Rx = true_x - 290
-        Ry = true_y - 90
-        Rz = np.sqrt((true_x + 100) ** 2 + (true_y + 100) ** 2)
-        print("Point at:", Rx, Ry, Rz)
-        with open("plot.txt", "a") as file:
-                 file.write(str((true_x  - 290) * 100) + " " + str((true_y - 90) * 100) + " " + str((true_x - 290 + 2) * 100 / 640) + " " + str((true_y - 90 + 2) * 100 / 480) + " " + str(1) + "\n")
+        Ry = 0
+        Rz = true_y - 90
+        print("Point at:", x, y)
+        with open("plot2.txt", "a") as file:
+                 file.write(str(x) + " " + str(y) + " ")
+    with open("plot2.txt", "a") as file:
+                file.write("-1 -1 \n")
 
     cv2.imshow('Road facing camera', img)
     cv2.imshow('Trajectory', traj)
