@@ -14,6 +14,11 @@ float scale_size = 1;
 
 int xform_mode = 0; 
 
+
+void (*varFunc)();
+int menu_mode = 0;
+
+
 #define XFORM_NONE    0 
 #define XFORM_ROTATE  1
 #define XFORM_SCALE 2 
@@ -197,6 +202,9 @@ void display()
     // glRotatef(theta, 0, 1, 0);   
     glutSolidCube(1); 
     
+
+
+
     while(file >> x_obs>> y_obs >> z_obs){
       if(x_obs == -1 and y_obs == -1 and z_obs == -1)
         break;
@@ -207,23 +215,7 @@ void display()
       glEnd();
     
     }
-    glPopMatrix(); 
-    //glutSwapBuffers(); 
-    //glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
-    //process pair (a,b)
-    
-
-
-
-   // glRotatef(90, 1, 0, 0);
-    //glRotatef(180, 1, 0, 0);
-
-
-    
-
-
-
-
+    glPopMatrix();
 
   }
 
@@ -306,12 +298,14 @@ void mykey(unsigned char key, int x, int y)
 			glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );
 			show_axis =1; 
 			break; 
-		case 's': gluLookAt(30,30,30,x_shift,0,z_shift,0,1,0);
+		case 's': 
+      
+      //gluLookAt(30,30,30,x_shift,0,z_shift,0,1,0);
 			glMatrixMode(GL_MODELVIEW); 
 			glLoadMatrixf((GLfloat*) objectXform); 
 			glTranslatef(-1,0,0); 
 			glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat *) objectXform );
-			show_axis=1; 
+			//show_axis=1; 
 			break; 
 		case 'a':
 			glMatrixMode(GL_MODELVIEW); 
@@ -328,6 +322,11 @@ void mykey(unsigned char key, int x, int y)
 		}
 glutPostRedisplay(); 
 }
+
+
+
+///////////////////////////////////////////////////////////
+
 
 void SpecialInput(int key, int x, int y)
 {
@@ -350,6 +349,28 @@ glutPostRedisplay();
 }
 ///////////////////////////////////////////////////////////////
 
+
+
+
+
+void menuFunc(int op)
+{
+	if(op==1)
+		menu_mode = 0;
+	else if(op==2)
+		menu_mode = 1;
+	else if(op==3)
+		menu_mode = 2;
+  else if(op==4)  //TODO
+		menu_mode = 3;  
+	else if(op==5)
+		exit(0);
+	glutPostRedisplay();
+}
+
+
+///////////////////////////////////////////////////////////
+
 int main(int argc, char** argv) 
 {
   glutInit(&argc, argv); 
@@ -357,6 +378,16 @@ int main(int argc, char** argv)
   glutInitWindowSize(1000,1000); 
   
   glutCreateWindow("proj"); 
+
+  glutCreateMenu(menuFunc);
+	glutAddMenuEntry("Trajectory",1);
+	glutAddMenuEntry("Plot Interest Points",2);
+	glutAddMenuEntry("Draw Interest Lines",3);
+  glutAddMenuEntry("Model Objects",4);
+	glutAddMenuEntry("Quit",5);
+	glutAttachMenu(GLUT_MIDDLE_BUTTON);
+
+
   glutDisplayFunc(display); 
   glutMouseFunc(mymouse); 
   glutMotionFunc(mymotion);
